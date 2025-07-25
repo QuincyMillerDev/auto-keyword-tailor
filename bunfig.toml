@@ -1,0 +1,6 @@
+[install]
+registry = "https://registry.npmjs.org"
+
+[run]
+# Allow Next.js to use Bun's fast package manager
+allow-scripts = true
