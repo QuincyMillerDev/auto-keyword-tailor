@@ -79,7 +79,7 @@ export default function ATSOptimizer() {
     goToStep(5)
 
     try {
-      const results = await optimizeWithKeywords(keywordResults.resumeText, selectedKeywords)
+      const results = await optimizeWithKeywords(keywordResults.resumeText, selectedKeywords, keywordResults.textPositions)
       setOptimizationResult(results)
       // Initialize all changes as selected
       const initialChanges = results.detailedChanges.map((change: DetailedChange) => ({

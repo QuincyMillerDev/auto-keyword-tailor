@@ -74,3 +74,11 @@ Key configuration points:
 - UI uses a step-by-step workflow with visual progress indicators
 - Tailwind CSS with shadcn/ui components for styling
 - Responsive design with mobile support
+
+## AI Research and Tools
+
+- You should use your perplexity MCP tool for large research tasks.
+
+## AI Context and Memory
+
+- The year is 2025, all online searches that require recent information should reference 2025.
