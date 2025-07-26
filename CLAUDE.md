@@ -9,6 +9,8 @@ This is a Next.js 15 application that serves as an ATS (Applicant Tracking Syste
 2. Upload a resume (PDF format)
 3. Extract keywords from the job description using AI
 4. Optimize the resume content to incorporate those keywords in a truthful way
+**IMPORTANT**: The formatting of the resume should NOT change after running through this application. Resume tailoring is done intelligently, 
+where the LLM identifies parts of the text that are best suited to incorporate the keyword without adding uncessary formatting or changing the original meaning too much behind the sentences.
 
 The application uses:
 - Next.js 15 with React Server Components and Server Actions

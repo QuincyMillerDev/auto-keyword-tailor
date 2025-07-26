@@ -2,6 +2,7 @@
 
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
+import pdf from 'pdf-parse'
 
 export async function optimizeResume(formData: FormData) {
   const jobDescription = formData.get("jobDescription") as string
@@ -11,7 +12,7 @@ export async function optimizeResume(formData: FormData) {
     throw new Error("Missing job description or resume file")
   }
 
-  // Extract text from PDF (simplified - in production you'd use a proper PDF parser)
+  // Extract text from PDF using pdf-parse library
   const resumeText = await extractTextFromPDF(resumeFile)
 
   // Step 1: Extract ATS keywords from job description
@@ -85,47 +86,20 @@ Keywords to integrate: ${JSON.stringify(keywords)}`,
 }
 
 async function extractTextFromPDF(file: File): Promise<string> {
-  // Simplified PDF text extraction
-  // In production, you would use a proper PDF parsing library like pdf-parse
-  const arrayBuffer = await file.arrayBuffer()
-  const text = new TextDecoder().decode(arrayBuffer)
-
-  // This is a very basic extraction - in reality you'd need proper PDF parsing
-  // For now, we'll simulate extracted resume content
-  return `
-JOHN DOE
-Software Engineer
-Email: john.doe@email.com | Phone: (555) 123-4567
-
-PROFESSIONAL SUMMARY
-Experienced software engineer with 5+ years developing web applications and systems. Skilled in multiple programming languages and frameworks with a focus on creating efficient, scalable solutions.
-
-TECHNICAL SKILLS
-• Programming Languages: JavaScript, Python, Java
-• Web Technologies: React, Node.js, HTML, CSS
-• Databases: MySQL, PostgreSQL, MongoDB
-• Tools: Git, Docker, AWS
-
-PROFESSIONAL EXPERIENCE
-
-Senior Software Engineer | Tech Company | 2021 - Present
-• Developed and maintained web applications serving 100k+ users
-• Collaborated with cross-functional teams to deliver features on time
-• Implemented automated testing procedures improving code quality
-• Optimized database queries reducing response time by 40%
-
-Software Engineer | StartupCo | 2019 - 2021
-• Built responsive web interfaces using modern JavaScript frameworks
-• Participated in code reviews and maintained coding standards
-• Worked with APIs and third-party integrations
-• Contributed to system architecture decisions
-
-EDUCATION
-Bachelor of Science in Computer Science
-University of Technology | 2019
-
-CERTIFICATIONS
-• AWS Certified Developer Associate
-• Google Cloud Professional Developer
-  `.trim()
+  try {
+    // Convert File to Buffer for pdf-parse
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    
+    // Extract text from PDF using pdf-parse
+    const pdfData = await pdf(buffer)
+    return pdfData.text || ''
+  } catch (error: any) {
+    console.error('Error parsing PDF:', error)
+    // Handle the specific error where pdf-parse tries to access non-existent files
+    if (error.code === 'ENOENT' || error.message?.includes('ENOENT') || error.message?.includes('test/data')) {
+      throw new Error('Failed to process PDF. The file may be corrupted or in an unsupported format.')
+    }
+    throw new Error(`Failed to extract text from PDF: ${error.message || 'Unknown error'}`)
+  }
 }
